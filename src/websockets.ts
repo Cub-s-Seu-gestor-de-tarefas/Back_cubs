@@ -1,5 +1,6 @@
 import { io } from "./http";
 import { SocketAuth } from "./socketControllers/SocketAuth";
+import { SocketUsers } from "./socketControllers/SocketUsers";
 // import { prismaClient } from "../src/database/prismaClient";
 
 import { SocketWorkspaces } from "./socketControllers/SocketWorkspace";
@@ -15,6 +16,7 @@ interface roomUsers {
 const users: roomUsers[] = [];
 const socketWorkspaces = new SocketWorkspaces();
 const socketAuth = new SocketAuth();
+const socketUsers = new SocketUsers();
 
 
 let user_id = "";
@@ -83,6 +85,13 @@ io.on("connection", (socket) => {
        io.to(json.memberId).emit("rooms",newRoom);
        socket.join(id);
        console.log("json",json,"newRoom",newRoom);
+    });
+
+    socket.on("getMembers",async (data,callback)=>{
+        const emails = await socketUsers.getMembers(data);
+        console.log(emails[0]);
+        callback(emails)
+
     });
 
 
