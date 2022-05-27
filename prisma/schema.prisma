@@ -1,0 +1,154 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String      @id @default(uuid())
+  name       String
+  email      String      @unique
+  password   String
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  Workspace  Workspace[]
+  TaskList   TaskList[]
+  Post       Post[]
+  Table      Table[]
+  members    Members[]
+
+  @@map("user")
+}
+
+model Members {
+  id String @id @default(uuid())
+  userName      String?
+  workspaceName String?
+  admin         Boolean
+  userId        String?
+  workspaceId   String?
+  Workspace     Workspace? @relation(fields: [workspaceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  User          User?      @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model Workspace {
+  id         String     @id @default(uuid())
+  title      String
+  private    Boolean
+  User       User?      @relation(fields: [owner], references: [id], onUpdate: Cascade)
+  owner      String
+  loadOrder  String
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  members    Members[]
+  TaskList   TaskList[]
+  Note       Note[]
+  Canva      Canva[]
+  Table      Table[]
+
+  @@map("workspace")
+}
+
+model Task {
+  id         String     @id @default(uuid())
+  title      String
+  check      Boolean    @default(false)
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  TaskList   TaskList[]
+
+
+  @@map("task")
+}
+
+model Info {
+  id         String     @id @default(uuid())
+  text       String
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  TaskList   TaskList[]
+
+  @@map("info")
+}
+
+model TaskList {
+  id          String     @id @default(uuid())
+  Workspace   Workspace? @relation(fields: [workspaceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  workspaceId String?
+  Info        Info?      @relation(fields: [infoId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  infoId      String?
+  Task        Task?      @relation(fields: [taskId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  taskId      String?
+  User        User?      @relation(fields: [last_change], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  last_change String?
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+
+
+  @@map("task_list")
+}
+
+model Note {
+  id          String     @id @default(uuid())
+  text        String
+  Workspace   Workspace? @relation(fields: [workspaceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  workspaceId String?
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+
+
+  @@map("note")
+}
+
+model Canva {
+  id          String     @id @default(uuid())
+  Workspace   Workspace? @relation(fields: [workspaceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  workspaceId String?
+  column      String
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+
+  Canva_column Canva_column[]
+
+  @@map("canva")
+}
+
+model Canva_column {
+  id      String  @id @default(uuid())
+  Canva   Canva?  @relation(fields: [canvaId], references: [id])
+  canvaId String?
+  Post    Post?   @relation(fields: [postId], references: [id])
+  postId  String?
+
+
+  @@map("canva_column")
+}
+
+model Post {
+  id           String         @id @default(uuid())
+  title        String
+  text         String
+  User         User?          @relation(fields: [last_change], references: [id], onUpdate: Cascade)
+  last_change  String?
+  Canva_column Canva_column[]
+
+  @@map("post")
+}
+
+model Table {
+  id          String     @id @default(uuid())
+  tableName   String
+  JsonString  Json
+  User        User?      @relation(fields: [useId], references: [id], onUpdate: Cascade)
+  useId       String
+  Workspace   Workspace? @relation(fields: [workspaceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  workspaceId String
+
+  @@map("table")
+}
