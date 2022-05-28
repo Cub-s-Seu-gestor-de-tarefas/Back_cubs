@@ -54,6 +54,7 @@ class SocketWorkspaces {
         if (workspace) {
 
             const getNewMember = await prismaClient.user.findUnique({ where: { email: memberEmail }, select: { id: true, name: true } });
+           
             const addNewMember = await prismaClient.members.create({ data: { userName: getNewMember.name, workspaceName: workspace.title, userId: getNewMember.id, workspaceId: workspaceId, admin: admin } })
             const getWorkspaceTitle = await prismaClient.workspace.findFirst({ where: { id: workspaceId }, select: { title: true } })
             const json = {
@@ -65,6 +66,7 @@ class SocketWorkspaces {
         if (member) {
             if (member.admin === true) {
                 const getNewMember = await prismaClient.user.findUnique({ where: { email: memberEmail }, select: { id: true, name: true } });
+              
                 const addNewMember = await prismaClient.members.create({ data: { userName: getNewMember.name, workspaceName: member.workspaceName, userId: getNewMember.id, workspaceId: workspaceId, admin: admin } })
                 const getWorkspaceTitle = await prismaClient.workspace.findFirst({ where: { id: workspaceId }, select: { title: true } })
                 const json = {
