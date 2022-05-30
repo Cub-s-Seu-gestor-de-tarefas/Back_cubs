@@ -21,11 +21,13 @@ class CreateUserController {
         const passwordHash = await hash(password, 8);
 
         const userEmail = await prismaClient.user.findFirst({ where: { email: email }, select: { email: true } });
+       
+       
         if (userEmail != null) {
             throw new Error("Este email ja esta cadastrado!");
         }
         const user = await prismaClient.user.create({
-            data: { name: name, password: passwordHash, email: email, }
+            data: { name: name, password: passwordHash, email: email,img:""  }
         });
 
         return response.json(user);

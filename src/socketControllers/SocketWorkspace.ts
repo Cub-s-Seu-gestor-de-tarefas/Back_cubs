@@ -31,7 +31,7 @@ class SocketWorkspaces {
 
         const workspace = await prismaClient.workspace.create({
             data: {
-                owner: user_id, private: false, title: title, loadOrder: ""
+                owner: user_id, private: false, title: title, loadOrder: "",  chat:""
             }
         })
         const newWorkspace = await prismaClient.workspace.findFirst({ where: { owner: user_id, title: title }, select: { id: true, title: true } })
