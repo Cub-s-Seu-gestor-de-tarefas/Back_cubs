@@ -10,8 +10,8 @@ async handle(request: Request, response: Response){
       throw new Error("E-mail & Senha incorretos!!!");
     }
    
-  console.log(user)
-  console.log(password)
+    console.log(user)
+    console.log(password)
 
 
     const passwordMath = await compare(password,user.password);

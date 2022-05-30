@@ -9,7 +9,7 @@ class SocketWorkspaces {
         if (userWorkspaces) {
             userWorkspaces.map((m) => { array.push({ id: m.id, title: m.title, private: m.private }) });
             const userMember = await prismaClient.members.findMany({ where: { userId: user }, include: { Workspace: { select: { title: true, id: true, private: true } } } })
-            console.log(userMember);
+            // console.log(userMember);
             userMember.map((m) => { array.push({ id: m.Workspace.id, title: m.Workspace.title, private: m.Workspace.private }) });
         } else {
             const userMember = await prismaClient.members.findMany({ where: { userId: user }, include: { Workspace: { select: { title: true, id: true, private: true } } }, orderBy: { Workspace: { created_at: "asc" } } })
@@ -18,7 +18,7 @@ class SocketWorkspaces {
 
         }
 
-        console.log(array);
+        // console.log(array);
         return array;
     };
     async handleCreateRoom(id: string, title: string) {
@@ -43,7 +43,7 @@ class SocketWorkspaces {
         const { workspaceId, memberEmail, admin } = data;
         const user = id;
         if (!memberEmail || admin === null) {
-            throw new Error("É necessário um E-mail e estatus de admin");
+            throw new Error("É necessário um E-mail e e status de admin");
         }
         if (!workspaceId) {
             throw new Error("É necessário o ID do Workspace");

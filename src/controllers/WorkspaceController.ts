@@ -31,7 +31,7 @@ class WorkspaceController {
         const { workspaceId, memberEmail, admin } = request.body;
         const user = request.user_id;
         if (!memberEmail || admin === null) {
-            throw new Error("É necessário um E-mail e estatus de admin");
+            throw new Error("É necessário um E-mail e e status de admin");
         }
         if (!workspaceId) {
             throw new Error("É necessário o ID do Workspace");

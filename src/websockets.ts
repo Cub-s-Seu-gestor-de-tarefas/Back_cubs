@@ -99,8 +99,7 @@ io.on("connection", (socket) => {
     socket.on("getMembers", async (data, callback) => {
         const emails = await socketUsers.getMembers(data);
         console.log(emails[0]);
-        callback(emails)
-
+        callback(emails);
     });
 
 
