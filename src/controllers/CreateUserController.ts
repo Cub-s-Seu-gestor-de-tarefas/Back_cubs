@@ -26,7 +26,7 @@ class CreateUserController {
         if (userEmail != null) {
             throw new Error("Este email ja esta cadastrado!");
         }
-        const bixos = ["aguia", "bixo_preguica", "bode", "castor", "cavalo", "cervo", "coruja",
+        const bixos = ["aguia", "bicho_preguica", "bode", "castor", "cavalo", "cervo", "coruja",
             "crocodilo", "elefante", "girafa", "gorila", "guaxinim", "hipopotamo", "lama", "leao",
             "lobo", "macaco", "meerkat", "panda", "pinguim", "raposa", "tigre", "touro", "urso",
             "zebra"];
