@@ -1,5 +1,6 @@
 import { io } from "./http";
 import { SocketAuth } from "./socketControllers/SocketAuth";
+import { SocketDocument } from "./socketControllers/SocketDocument";
 import { SocketUsers } from "./socketControllers/SocketUsers";
 // import { prismaClient } from "../src/database/prismaClient";
 
@@ -17,6 +18,7 @@ const users: roomUsers[] = [];
 const socketWorkspaces = new SocketWorkspaces();
 const socketAuth = new SocketAuth();
 const socketUsers = new SocketUsers();
+const socketDocument = new SocketDocument();
 
 
 let user_id = "";
@@ -104,22 +106,17 @@ io.on("connection", (socket) => {
 
 
     socket.on("select_room", async (data, callback) => {
-        console.log(data)
-        socket.join(data.room);
+        console.log(data, "select_room")
+        const header = await socketDocument.getHeaderData(data);
+        console.log(header);
 
-        const usersInRoom = users.find((user) => user.user_id === user_id && user.room === data.room);
-        if (usersInRoom) {
-            usersInRoom.socket_id = socket.id;
-        }
-        else {
-            users.push({
-                socket_id: socket.id,
-                user_id: user_id,
-                room: data.room,
-            })
-        }
-        console.log(users);
 
+
+
+
+        //pegar o loadOrder  
+        callback(header)
+        socket.join(data);
     });
 
 });
