@@ -26,12 +26,14 @@ class SocketDocument {
       console.log("topMembers",topMembers);
       console.log("bichos",bichos);
       bichos.pop();
-      
+      let date = workspaceData.updated_at;
+    //    let stringData = date.toLocaleDateString("pt-br",{year:"numeric",month:"long",day:"numeric"});
+       let stringData = new Intl.DateTimeFormat("pt-br",{dateStyle:"full",timeStyle:"full",}).format(date)
 
         let header = {
             "imgs": bichos,
             "title":workspaceData.title,
-            "update_at": workspaceData.updated_at
+            "update_at": stringData
         }
         return header;
     }
