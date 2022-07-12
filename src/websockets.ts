@@ -108,14 +108,20 @@ io.on("connection", (socket) => {
     socket.on("select_room", async (data, callback) => {
         console.log(data, "select_room")
         const header = await socketDocument.getHeaderData(data);
-        console.log(header);
+        // console.log(header);
 
 
        const components = await socketDocument.handleGetLoadOrder(data);
     //    console.log("components",components);
 
+      const preLoad = {
+        ...header,
+        ...components
+      }
+      console.log(preLoad);
+
         //pegar o loadOrder  
-        callback(header)
+        callback(preLoad)
         socket.join(data);
     });
 
@@ -126,6 +132,16 @@ io.on("connection", (socket) => {
         //emit to others rooms a new title
         io.to(data.currentRoom).emit("update", {"DocTitle":title});
         console.log("updateDocTitle: ",title);
+    })
+
+    socket.on("newComponent", async(data)=>{
+        // console.log("newComponent",data)
+        let {currentRoom, component} = data;
+       await socketDocument.handleCreateNewComponent(currentRoom,component);
+    
+      //
+      
+     
     })
 
 });
