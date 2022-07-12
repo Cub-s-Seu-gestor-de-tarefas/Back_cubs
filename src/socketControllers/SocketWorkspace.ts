@@ -27,11 +27,15 @@ class SocketWorkspaces {
         if (!title) {
             throw new Error("title is empity")
         }
-
+        let loadOrder = {
+            "components":[]
+        } 
+       let stringloadOrder = JSON.stringify(loadOrder);
+       console.log("loadOrder", stringloadOrder)
 
         const workspace = await prismaClient.workspace.create({
             data: {
-                owner: user_id, private: false, title: title, loadOrder: "",  chat:""
+                owner: user_id, private: false, title: title, loadOrder: stringloadOrder,  chat:""
             }
         })
         const newWorkspace = await prismaClient.workspace.findFirst({ where: { owner: user_id, title: title }, select: { id: true, title: true } })

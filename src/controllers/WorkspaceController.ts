@@ -14,9 +14,16 @@ class WorkspaceController {
         }
 
         const userId = request.user_id;
+
+        let loadOrder = {
+            "components":[]
+        } 
+       let stringloadOrder = JSON.stringify(loadOrder);
+       console.log("loadOrder", stringloadOrder)
+
         const workspace = await prismaClient.workspace.create({
             data: {
-                owner: userId, private: privateState, title: title, loadOrder: ""
+                owner: userId, private: privateState, title: title, loadOrder: stringloadOrder,chat:""
             }
         })
         const workspaceId = await prismaClient.workspace.findFirst({ where: { owner: user_id, title: title }, select: { id: true } })

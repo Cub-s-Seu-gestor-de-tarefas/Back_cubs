@@ -111,8 +111,8 @@ io.on("connection", (socket) => {
         console.log(header);
 
 
-
-
+       const components = await socketDocument.handleGetLoadOrder(data);
+    //    console.log("components",components);
 
         //pegar o loadOrder  
         callback(header)
@@ -125,7 +125,7 @@ io.on("connection", (socket) => {
         await socketDocument.handleUpdateTitle(data.currentRoom, title)
         //emit to others rooms a new title
         io.to(data.currentRoom).emit("update", {"DocTitle":title});
-        console.log(title);
+        console.log("updateDocTitle: ",title);
     })
 
 });
