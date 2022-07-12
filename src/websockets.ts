@@ -119,6 +119,15 @@ io.on("connection", (socket) => {
         socket.join(data);
     });
 
+    socket.on("docTitleUpdate",async(data)=>{
+        let title = data.title;
+        //update Title workspace
+        await socketDocument.handleUpdateTitle(data.currentRoom, title)
+        //emit to others rooms a new title
+        io.to(data.currentRoom).emit("update", {"DocTitle":title});
+        console.log(title);
+    })
+
 });
 
 console.log(users);

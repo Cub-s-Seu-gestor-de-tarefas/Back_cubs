@@ -23,8 +23,7 @@ class SocketDocument {
 
         }
        
-      console.log("topMembers",topMembers);
-      console.log("bichos",bichos);
+    
       bichos.pop();
       let date = workspaceData.updated_at;
     //    let stringData = date.toLocaleDateString("pt-br",{year:"numeric",month:"long",day:"numeric"});
@@ -36,6 +35,10 @@ class SocketDocument {
             "update_at": stringData
         }
         return header;
+    }
+
+    async handleUpdateTitle(currentRoom:string,title:string){
+        await prismaClient.workspace.update({where:{id:currentRoom},data:{title:title}});
     }
 }
 export { SocketDocument };
