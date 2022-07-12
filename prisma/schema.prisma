@@ -44,7 +44,7 @@ model Workspace {
   private    Boolean
   User       User?      @relation(fields: [owner], references: [id], onUpdate: Cascade)
   owner      String
-  loadOrder  String
+  loadOrder  String     @db.MediumText
   chat       String     @db.MediumText
   created_at DateTime   @default(now())
   updated_at DateTime   @updatedAt
