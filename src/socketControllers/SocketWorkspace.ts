@@ -28,7 +28,8 @@ class SocketWorkspaces {
             throw new Error("title is empity")
         }
         let loadOrder = {
-            "components":[]
+            "components":[],
+            "loadOrder":[]
         } 
        let stringloadOrder = JSON.stringify(loadOrder);
        console.log("loadOrder", stringloadOrder)

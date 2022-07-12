@@ -56,6 +56,17 @@ class SocketDocument {
 
     async handleCreateNewComponent(currentRoom: string, component: any) {
         //filtrar o componete 
+         
+        const updateLoadOrder= async(currentRoom:string,component:any)=>{
+            let w =  await prismaClient.workspace.findFirst({where:{id:currentRoom},select:{loadOrder:true}});
+            const {components,loadOrder} = JSON.parse(w.loadOrder);
+            components.push(component);
+            loadOrder.push(components.length - 1);
+            let data = {components:components,loadOrder:loadOrder}
+            let metadata = JSON.stringify(data);
+            await prismaClient.workspace.update({where:{id:currentRoom},data:{loadOrder:metadata}})
+            console.log("components: ", components);
+        }
 
         const type = component.compType;
         console.log("c", component, type)
@@ -64,18 +75,13 @@ class SocketDocument {
                 const kanban = await prismaClient.kanban.create({ data: { Title: "Kanban", workspaceId: currentRoom, metadata: "" } });
                 component.compID = kanban.id;
                 console.log(component);
-              let {loadOrder} =  await prismaClient.workspace.findFirst({where:{id:currentRoom},select:{loadOrder:true}});
-              const {components} = JSON.parse(loadOrder);
-              components.push(component);
-              let data = {components:components}
-              let metadata = JSON.stringify(data);
-              await prismaClient.workspace.update({where:{id:currentRoom},data:{loadOrder:metadata}})
-              console.log("components: ", components);
+                await updateLoadOrder(currentRoom, component)
+             
                 break;
 
 
         }
-        //criar o componete 
+        
 
     }
 
