@@ -21,7 +21,7 @@ model User {
   Workspace  Workspace[]
   TaskList   TaskList[]
   Post       Post[]
-  Table      Table[]
+  
   members    Members[]
 
   @@map("user")
@@ -162,8 +162,6 @@ model Table {
   id          String     @id @default(uuid())
   tableName   String
   JsonString  Json
-  User        User?      @relation(fields: [useId], references: [id], onUpdate: Cascade)
-  useId       String
   Workspace   Workspace? @relation(fields: [workspaceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   workspaceId String
 

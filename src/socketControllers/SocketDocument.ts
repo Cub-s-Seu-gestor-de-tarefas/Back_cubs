@@ -56,15 +56,15 @@ class SocketDocument {
 
     async handleCreateNewComponent(currentRoom: string, component: any) {
         //filtrar o componete 
-         
-        const updateLoadOrder= async(currentRoom:string,component:any)=>{
-            let w =  await prismaClient.workspace.findFirst({where:{id:currentRoom},select:{loadOrder:true}});
-            const {components,loadOrder} = JSON.parse(w.loadOrder);
+
+        const updateLoadOrder = async (currentRoom: string, component: any) => {
+            let w = await prismaClient.workspace.findFirst({ where: { id: currentRoom }, select: { loadOrder: true } });
+            const { components, loadOrder } = JSON.parse(w.loadOrder);
             components.push(component);
             loadOrder.push(components.length - 1);
-            let data = {components:components,loadOrder:loadOrder}
+            let data = { components: components, loadOrder: loadOrder }
             let metadata = JSON.stringify(data);
-            await prismaClient.workspace.update({where:{id:currentRoom},data:{loadOrder:metadata}})
+            await prismaClient.workspace.update({ where: { id: currentRoom }, data: { loadOrder: metadata } })
             console.log("components: ", components);
         }
 
@@ -76,12 +76,29 @@ class SocketDocument {
                 component.compID = kanban.id;
                 console.log(component);
                 await updateLoadOrder(currentRoom, component)
-             
+
                 break;
+            case "Table":
+                const table = await prismaClient.table.create({ data: { tableName: "Tabela", workspaceId: currentRoom, JsonString: ""} })
+                component.compID = table.id;
+                console.log(component);
+                await updateLoadOrder(currentRoom, component)
+
+                break;
+            case "Note":
+                    const note = await prismaClient.note.create({data:{text:"", workspaceId:currentRoom}})
+                    component.compID = note.id;
+                    console.log(component);
+                    await updateLoadOrder(currentRoom, component);
+
+                break;
+            case "Calendar":
+                    console.log("criar o calendario!!!")
+            break;
 
 
         }
-        
+
 
     }
 
