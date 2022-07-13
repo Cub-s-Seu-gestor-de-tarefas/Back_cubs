@@ -102,13 +102,44 @@ class SocketDocument {
 
 
         const metaKanban = {
-            tasks: [],
-            columns: [],
-            columnOrder:[]
-           }
+            tasks: [
+                { id: 1, content: "Configure Next.js application" },
+                { id: 2, content: "Configure Next.js and tailwind " },
+                { id: 3, content: "Create sidebar navigation menu" }
+            ],
+            columns: [
+                {
+                    id: "0",
+                    title: "Ice box",
+                    color: "#1b95df",
+                    taskIds: [0, 1, 2],
+                }, {
+                    id: "1",
+                    title: "Emergency",
+                    color: "#ff0f42",
+                    taskIds: [],
+                }, {
+                    id: "2",
+                    title: "In Progress",
+                    color: "#f6d30e",
+                    taskIds: [],
+                }, {
+                    id: "3",
+                    title: "Testing",
+                    color: "#8321db",
+                    taskIds: [],
+                }, {
+                    id: "4",
+                    title: "Done",
+                    color: "#32d762",
+                    taskIds: [],
+                }
+            ],
+            columnOrder: [0,1,2,3,4]
+        }
         const metaTable = {
-            content:{column:["ice","fire","ground"],value:["1","2"]}
-        }   
+            content: { column: ["ice", "fire", "ground"], value: ["1", "2"] }
+        }
 
 
         const type = component.compType;
