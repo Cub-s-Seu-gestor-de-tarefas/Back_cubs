@@ -113,7 +113,7 @@ model TaskList {
 
 model Note {
   id          String     @id @default(uuid())
-  text        String
+  text        String    @db.MediumText
   Workspace   Workspace? @relation(fields: [workspaceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   workspaceId String?
   created_at  DateTime   @default(now())
@@ -161,7 +161,7 @@ model Post {
 model Table {
   id          String     @id @default(uuid())
   tableName   String
-  JsonString  Json
+  JsonString   String @db.MediumText
   Workspace   Workspace? @relation(fields: [workspaceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   workspaceId String
 
