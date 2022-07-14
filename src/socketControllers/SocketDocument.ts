@@ -52,9 +52,10 @@ class SocketDocument {
         for (let i = 0; i < components.length; i++) {
             switch (components[i].compType) {
                 case "Kanban":
-                    const kanbanData = await prismaClient.kanban.findFirst({ where: { id: components[i].compID }, select: { metadata: true } });
+                    const kanbanData = await prismaClient.kanban.findFirst({ where: { id: components[i].compID }, select: { metadata: true} });
                     let k = JSON.parse(kanbanData.metadata)
                     components[i].compData = k;
+                    
                     break;
                 case "Table":
                     const { JsonString } = await prismaClient.table.findFirst({ where: { id: components[i].compID }, select: { JsonString: true } });

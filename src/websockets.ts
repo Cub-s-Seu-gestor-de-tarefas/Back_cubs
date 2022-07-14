@@ -1,6 +1,7 @@
 import { io } from "./http";
 import { SocketAuth } from "./socketControllers/SocketAuth";
 import { SocketDocument } from "./socketControllers/SocketDocument";
+import { SocketKanban } from "./socketControllers/SocketKanban";
 import { SocketUsers } from "./socketControllers/SocketUsers";
 // import { prismaClient } from "../src/database/prismaClient";
 
@@ -19,6 +20,7 @@ const socketWorkspaces = new SocketWorkspaces();
 const socketAuth = new SocketAuth();
 const socketUsers = new SocketUsers();
 const socketDocument = new SocketDocument();
+const socketKanban = new SocketKanban();
 
 
 let user_id = "";
@@ -125,14 +127,14 @@ io.on("connection", (socket) => {
         socket.join(data);
     });
 
-    socket.on("docTitleUpdate",async(data)=>{
+    socket.on("changeDocTitle",async(data)=>{
         let title = data.title;
         //update Title workspace
         await socketDocument.handleUpdateTitle(data.currentRoom, title)
         //emit to others rooms a new title
-        io.to(data.currentRoom).emit("update", {"DocTitle":title});
+        io.to(data.currentRoom).emit("updateDocTitle", {"DocTitle":title});
         console.log("updateDocTitle: ",title);
-    })
+    });
 
     socket.on("newComponent", async(data)=>{
         // console.log("newComponent",data)
@@ -142,7 +144,18 @@ io.on("connection", (socket) => {
       //
       
      
+    });
+
+    socket.on("getKanbanTitle",async(data,callback)=>{
+        callback(await socketKanban.handleGetTitle(data));
     })
+    socket.on("changeKanbanTitle",async(data)=>{
+        const{kabanId,title,currentRoom}=data;
+        console.log(data)
+        await socketKanban.handleUpdateTitle(kabanId,title);
+        io.to(currentRoom).emit("updateKanbanTitle", {"kanbanTitle":title,"kanbanId":kabanId});
+    })
+
 
 });
 
