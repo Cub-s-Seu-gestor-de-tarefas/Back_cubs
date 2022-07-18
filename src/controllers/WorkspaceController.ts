@@ -10,7 +10,7 @@ class WorkspaceController {
         const user_id = request.user_id;
 
         if (!title) {
-            throw new Error("title is empity")
+            throw new Error("title is empty")
         }
 
         const userId = request.user_id;
@@ -18,14 +18,16 @@ class WorkspaceController {
         let loadOrder = {
             "components":[]
         } 
-       let stringloadOrder = JSON.stringify(loadOrder);
-       console.log("loadOrder", stringloadOrder)
+
+        let stringloadOrder = JSON.stringify(loadOrder);
+        console.log("loadOrder", stringloadOrder)
 
         const workspace = await prismaClient.workspace.create({
             data: {
                 owner: userId, private: privateState, title: title, loadOrder: stringloadOrder,chat:""
             }
         })
+        
         const workspaceId = await prismaClient.workspace.findFirst({ where: { owner: user_id, title: title }, select: { id: true } })
 
         console.log(workspaceId);
