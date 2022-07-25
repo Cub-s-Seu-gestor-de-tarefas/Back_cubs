@@ -136,12 +136,14 @@ io.on("connection", (socket) => {
         console.log("updateDocTitle: ",title);
     });
 
-    socket.on("newComponent", async(data)=>{
+    socket.on("newComponent", async(data,callback)=>{
         // console.log("newComponent",data)
         let {currentRoom, component} = data;
-       await socketDocument.handleCreateNewComponent(currentRoom,component);
-    
-      //
+      const newComponent = await socketDocument.handleCreateNewComponent(currentRoom,component);
+        console.log("New Component: 🍕", newComponent)
+        callback(newComponent);
+        io.to(currentRoom).emit("addNewComponent", newComponent);
+      
       
      
     });

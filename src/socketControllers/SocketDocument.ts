@@ -52,10 +52,10 @@ class SocketDocument {
         for (let i = 0; i < components.length; i++) {
             switch (components[i].compType) {
                 case "Kanban":
-                    const kanbanData = await prismaClient.kanban.findFirst({ where: { id: components[i].compID }, select: { metadata: true} });
+                    const kanbanData = await prismaClient.kanban.findFirst({ where: { id: components[i].compID }, select: { metadata: true } });
                     let k = JSON.parse(kanbanData.metadata)
                     components[i].compData = k;
-                    
+
                     break;
                 case "Table":
                     const { JsonString } = await prismaClient.table.findFirst({ where: { id: components[i].compID }, select: { JsonString: true } });
@@ -99,6 +99,65 @@ class SocketDocument {
             let metadata = JSON.stringify(data);
             await prismaClient.workspace.update({ where: { id: currentRoom }, data: { loadOrder: metadata } })
             console.log("components: ", components);
+
+            const newComp = {
+                newComponent: component,
+                position: components.length - 1
+            }
+
+            // console.log("New Component:  ", newComp)
+            return newComp;
+
+        }
+
+
+        const getCompData = async (newComponentObject: any) => {
+            const { newComponent, position } = newComponentObject;
+            // console.log("😀",newComponent)
+            let data;
+
+            switch (newComponent.compType) {
+                case "Kanban":
+                    console.log("😎")
+                    const kanbanData = await prismaClient.kanban.findFirst({ where: { id: newComponent.compID }, select: { metadata: true } });
+                    let k = JSON.parse(kanbanData.metadata);
+
+                    newComponent.compData = k;
+
+                    data = {
+                        newComponent: newComponent,
+                        position: position
+                    }
+                    // console.log("New Component:  ", data)
+                    return data;
+                    break;
+                case "Table":
+                    const { JsonString } = await prismaClient.table.findFirst({ where: { id: newComponent.compID }, select: { JsonString: true } });
+                    //    console.log("table: ",typeof JsonString);
+
+                    let t = JSON.parse(JsonString);
+                    newComponent.compData = t;
+                    data = {
+                        newComponent: newComponent,
+                        position: position
+                    }
+                    // console.log("New Component:  ", data)
+                    return data;
+                    break;
+                case "Note":
+                    const noteData = await prismaClient.note.findFirst({ where: { id: newComponent.compID }, select: { text: true } });
+                    newComponent.compData = { text: noteData.text };
+                    data = {
+                        newComponent: newComponent,
+                        position: position
+                    }
+                    // console.log("New Component:  ", data)
+                    return data;
+                    break;
+
+
+            }
+
         }
 
 
@@ -136,7 +195,7 @@ class SocketDocument {
                     taskIds: [],
                 }
             ],
-            columnOrder: [0,1,2,3,4]
+            columnOrder: [0, 1, 2, 3, 4]
         }
         const metaTable = {
             content: { column: ["ice", "fire", "ground"], value: ["1", "2"] }
@@ -145,26 +204,30 @@ class SocketDocument {
 
         const type = component.compType;
         console.log("c", component, type)
+        let newComp;
         switch (type) {
             case "Kanban":
                 const kanban = await prismaClient.kanban.create({ data: { Title: "Kanban", workspaceId: currentRoom, metadata: JSON.stringify(metaKanban) } });
                 component.compID = kanban.id;
                 console.log(component);
-                await updateLoadOrder(currentRoom, component)
+                newComp = await updateLoadOrder(currentRoom, component)
+                return await getCompData(newComp);
 
                 break;
             case "Table":
                 const table = await prismaClient.table.create({ data: { tableName: "Tabela", workspaceId: currentRoom, JsonString: JSON.stringify(metaTable) } })
                 component.compID = table.id;
                 console.log(component);
-                await updateLoadOrder(currentRoom, component)
+                newComp = await updateLoadOrder(currentRoom, component)
+                return await getCompData(newComp)
 
                 break;
             case "Note":
                 const note = await prismaClient.note.create({ data: { text: "", workspaceId: currentRoom } })
                 component.compID = note.id;
                 console.log(component);
-                await updateLoadOrder(currentRoom, component);
+                newComp = await updateLoadOrder(currentRoom, component)
+                return await getCompData(newComp);
 
                 break;
             case "Calendar":
