@@ -132,7 +132,8 @@ io.on("connection", (socket) => {
         //update Title workspace
         await socketDocument.handleUpdateTitle(data.currentRoom, title)
         //emit to others rooms a new title
-        io.to(data.currentRoom).emit("updateDocTitle", {"DocTitle":title});
+        // io.to(data.currentRoom).emit("updateDocTitle", {"DocTitle":title});
+        socket.broadcast.to(data.currentRoom).emit("updateDocTitle", {"DocTitle":title});
         console.log("updateDocTitle: ",title);
     });
 
