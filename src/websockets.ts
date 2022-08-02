@@ -143,7 +143,8 @@ io.on("connection", (socket) => {
       const newComponent = await socketDocument.handleCreateNewComponent(currentRoom,component);
         console.log("New Component: 🍕", newComponent)
         callback(newComponent);
-        io.to(currentRoom).emit("addNewComponent", newComponent);
+        // io.to(currentRoom).emit("addNewComponent", newComponent);
+        socket.broadcast.to(currentRoom).emit("addNewComponent", newComponent)
       
       
      
@@ -156,7 +157,7 @@ io.on("connection", (socket) => {
         const{kabanId,title,currentRoom}=data;
         console.log(data)
         await socketKanban.handleUpdateTitle(kabanId,title);
-        io.to(currentRoom).emit("updateKanbanTitle", {"kanbanTitle":title,"kanbanId":kabanId});
+        socket.broadcast.to(currentRoom).emit("updateKanbanTitle", {"kanbanTitle":title,"kanbanId":kabanId});
     })
 
 
