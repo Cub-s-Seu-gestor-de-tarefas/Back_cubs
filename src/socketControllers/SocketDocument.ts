@@ -163,9 +163,9 @@ class SocketDocument {
 
         const metaKanban = {
             tasks: [
-                { id: 1, content: "Configure Next.js application" },
-                { id: 2, content: "Configure Next.js and tailwind " },
-                { id: 3, content: "Create sidebar navigation menu" }
+                { id: 0, content: "Configure Next.js application" },
+                { id: 1, content: "Configure Next.js and tailwind " },
+                { id: 2, content: "Create sidebar navigation menu" }
             ],
             columns: [
                 {
