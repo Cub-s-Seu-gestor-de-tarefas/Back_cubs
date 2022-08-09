@@ -8,5 +8,10 @@ class SocketKanban{
     await prismaClient.kanban.update({where:{id:kanbanID},data:{Title:title}});
 
  }
+ async handleUpdateKanbanMetadata(metadata,kabanId:string){
+    // console.log(kabanId,metadata)
+    const string = JSON.stringify(metadata);
+await prismaClient.kanban.update({where:{id:kabanId},data:{metadata:string}})
+ }
 }
 export{SocketKanban};

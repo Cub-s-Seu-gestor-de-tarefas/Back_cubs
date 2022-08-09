@@ -160,6 +160,14 @@ io.on("connection", (socket) => {
         socket.broadcast.to(currentRoom).emit("updateKanbanTitle", {"kanbanTitle":title,"kanbanId":kabanId});
     })
 
+    socket.on("updateKanbanMetadata",async(data)=>{
+        // console.log(data);
+        const {kanbanId,metadata}=data;
+        await socketKanban.handleUpdateKanbanMetadata(metadata,kanbanId);
+
+
+    })
+
 
 });
 
