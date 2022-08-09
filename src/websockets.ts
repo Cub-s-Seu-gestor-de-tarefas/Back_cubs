@@ -113,59 +113,64 @@ io.on("connection", (socket) => {
         // console.log(header);
 
 
-       const components = await socketDocument.handleGetLoadOrder(data);
-    //    console.log("components",components);
+        const components = await socketDocument.handleGetLoadOrder(data);
+        //    console.log("components",components);
 
-      const preLoad = {
-        ...header,
-        ...components
-      }
-      console.log(preLoad);
+        const preLoad = {
+            ...header,
+            ...components
+        }
+        console.log(preLoad);
 
         //pegar o loadOrder  
         callback(preLoad)
         socket.join(data);
     });
 
-    socket.on("changeDocTitle",async(data)=>{
+    socket.on("changeDocTitle", async (data) => {
         let title = data.title;
         //update Title workspace
         await socketDocument.handleUpdateTitle(data.currentRoom, title)
         //emit to others rooms a new title
         // io.to(data.currentRoom).emit("updateDocTitle", {"DocTitle":title});
-        socket.broadcast.to(data.currentRoom).emit("updateDocTitle", {"DocTitle":title});
-        console.log("updateDocTitle: ",title);
+        socket.broadcast.to(data.currentRoom).emit("updateDocTitle", { "DocTitle": title });
+        console.log("updateDocTitle: ", title);
     });
 
-    socket.on("newComponent", async(data,callback)=>{
+    socket.on("newComponent", async (data, callback) => {
         // console.log("newComponent",data)
-        let {currentRoom, component} = data;
-      const newComponent = await socketDocument.handleCreateNewComponent(currentRoom,component);
+        let { currentRoom, component } = data;
+        const newComponent = await socketDocument.handleCreateNewComponent(currentRoom, component);
         console.log("New Component: 🍕", newComponent)
         callback(newComponent);
         // io.to(currentRoom).emit("addNewComponent", newComponent);
         socket.broadcast.to(currentRoom).emit("addNewComponent", newComponent)
-      
-      
-     
+
+
+
     });
 
-    socket.on("getKanbanTitle",async(data,callback)=>{
+    socket.on("getKanbanTitle", async (data, callback) => {
         callback(await socketKanban.handleGetTitle(data));
     })
-    socket.on("changeKanbanTitle",async(data)=>{
-        const{kabanId,title,currentRoom}=data;
+    socket.on("changeKanbanTitle", async (data) => {
+        const { kabanId, title, currentRoom } = data;
         console.log(data)
-        await socketKanban.handleUpdateTitle(kabanId,title);
-        socket.broadcast.to(currentRoom).emit("updateKanbanTitle", {"kanbanTitle":title,"kanbanId":kabanId});
+        await socketKanban.handleUpdateTitle(kabanId, title);
+        socket.broadcast.to(currentRoom).emit("updateKanbanTitle", { "kanbanTitle": title, "kanbanId": kabanId });
     })
 
-    socket.on("updateKanbanMetadata",async(data)=>{
+    socket.on("updateKanbanMetadata", async (data) => {
         // console.log(data);
-        const {kanbanId,metadata}=data;
-        await socketKanban.handleUpdateKanbanMetadata(metadata,kanbanId);
+        const { kanbanId, metadata } = data;
+        await socketKanban.handleUpdateKanbanMetadata(metadata, kanbanId);
 
 
+    })
+
+    socket.on("spredingkanban", (data) => {
+        const { metadata, kanbanId ,currentRoom} = data;
+        socket.broadcast.to(currentRoom).emit("gettingSpreadData",{metadata:metadata,kanbanId:kanbanId})
     })
 
 
