@@ -101,9 +101,16 @@ io.on("connection", (socket) => {
     });
 
     socket.on("getMembers", async (data, callback) => {
-        const emails = await socketUsers.getMembers(data);
-        console.log(emails[0]);
-        callback(emails);
+        const {email,token}=data;
+        console.log(data)
+        const emails = await socketUsers.getMembers(email);
+      const id =  socketAuth.authentication(token);
+        const userEmail = await socketUsers.getUserEmail(id);
+        console.log("userEmail: ",userEmail);
+       const newEmails = emails.filter(d=> d.email === userEmail ? false : true )
+        //aplicar um filter no array de email com o email do usuario estraido via token
+        console.log( newEmails);
+        callback(newEmails);
     });
 
 
@@ -169,7 +176,8 @@ io.on("connection", (socket) => {
     })
 
     socket.on("spredingkanban", (data) => {
-        const { metadata, kanbanId ,currentRoom} = data;
+        let { metadata, kanbanId ,currentRoom} = data;
+      
         socket.broadcast.to(currentRoom).emit("gettingSpreadData",{metadata:metadata,kanbanId:kanbanId})
     })
 

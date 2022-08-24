@@ -19,5 +19,9 @@ class SocketUsers {
             return true;
         }
     }
+    async getUserEmail(id:string){
+const email = await prismaClient.user.findFirst({where:{id:id},select:{email:true}});
+return email.email;
+    }
 }
 export { SocketUsers };
