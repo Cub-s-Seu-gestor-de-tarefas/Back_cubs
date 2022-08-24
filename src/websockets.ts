@@ -1,5 +1,6 @@
 import { io } from "./http";
 import { SocketAuth } from "./socketControllers/SocketAuth";
+import { SocketChat } from "./socketControllers/SocketChat";
 import { SocketDocument } from "./socketControllers/SocketDocument";
 import { SocketKanban } from "./socketControllers/SocketKanban";
 import { SocketUsers } from "./socketControllers/SocketUsers";
@@ -21,6 +22,7 @@ const socketAuth = new SocketAuth();
 const socketUsers = new SocketUsers();
 const socketDocument = new SocketDocument();
 const socketKanban = new SocketKanban();
+const socketChat = new SocketChat();
 
 
 let user_id = "";
@@ -179,6 +181,13 @@ io.on("connection", (socket) => {
         let { metadata, kanbanId ,currentRoom} = data;
       
         socket.broadcast.to(currentRoom).emit("gettingSpreadData",{metadata:metadata,kanbanId:kanbanId})
+    })
+
+    socket.on("chatNewMessage",async(d)=>{
+        const{token,data,currentRoom}=d;
+        console.log(d)
+        await socketChat.addNewMessage(data,socketAuth.authentication(token),currentRoom);
+
     })
 
 
