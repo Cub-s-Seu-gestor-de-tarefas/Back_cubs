@@ -184,8 +184,9 @@ io.on("connection", (socket) => {
     })
 
     socket.on("chatNewMessage",async(d)=>{
+        
         const{token,data,currentRoom}=d;
-        console.log(d)
+       
         await socketChat.addNewMessage(data,socketAuth.authentication(token),currentRoom);
 
     })

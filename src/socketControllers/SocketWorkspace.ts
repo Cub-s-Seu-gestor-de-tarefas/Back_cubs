@@ -31,12 +31,16 @@ class SocketWorkspaces {
             "components":[],
             "loadOrder":[]
         } 
+        let MetaChat = {
+            "messages":[]
+        }
        let stringloadOrder = JSON.stringify(loadOrder);
        console.log("loadOrder", stringloadOrder)
+       let stringMetachat = JSON.stringify(MetaChat);
 
         const workspace = await prismaClient.workspace.create({
             data: {
-                owner: user_id, private: false, title: title, loadOrder: stringloadOrder,  chat:""
+                owner: user_id, private: false, title: title, loadOrder: stringloadOrder,  chat:stringMetachat
             }
         })
         const newWorkspace = await prismaClient.workspace.findFirst({ where: { owner: user_id, title: title }, select: { id: true, title: true } })
