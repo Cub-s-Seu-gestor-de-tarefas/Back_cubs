@@ -187,7 +187,14 @@ io.on("connection", (socket) => {
         
         const{token,data,currentRoom}=d;
        
-        await socketChat.addNewMessage(data,socketAuth.authentication(token),currentRoom);
+      const message =  await socketChat.addNewMessage(data,socketAuth.authentication(token),currentRoom);
+        socket.broadcast.to(currentRoom).emit("SpreadChatMessage",{message:message});
+    })
+    socket.on("GetMessages",async(data,callback)=>{
+        const {currentRoom}= data;
+       const messages =await socketChat.getMessages(currentRoom);
+       
+       callback(messages)
 
     })
 
