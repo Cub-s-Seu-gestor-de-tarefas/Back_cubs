@@ -199,6 +199,11 @@ io.on("connection", (socket) => {
        callback(messages)
 
     })
+    socket.on("getProfileData",async(data,callback)=>{
+        const {Token}= data;
+       const dados = await socketUsers.getProfileData(socketAuth.authentication(Token));
+      callback(dados)
+    })
 
 
 });
