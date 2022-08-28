@@ -12,10 +12,10 @@ class SocketChat {
         console.log(data)
         const { chat } = await prismaClient.workspace.findFirst({ where: { id: currentRoom }, select: { chat: true } });
         const { messages } = JSON.parse(chat);
-        console.log(messages)
+        // console.log(messages)
         messages.push(data)
         const stringChat = JSON.stringify({ messages: messages })
-        console.log(stringChat);
+        // console.log(stringChat);
         await prismaClient.workspace.update({ where: { id: currentRoom }, data: { chat: stringChat } });
        return data;
     }

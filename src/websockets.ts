@@ -183,12 +183,14 @@ io.on("connection", (socket) => {
         socket.broadcast.to(currentRoom).emit("gettingSpreadData",{metadata:metadata,kanbanId:kanbanId})
     })
 
-    socket.on("chatNewMessage",async(d)=>{
+    socket.on("chatNewMessage",async(d,callback)=>{
         
         const{token,data,currentRoom}=d;
-       
+       //criar um callback para adicionar a mensagem escrita
       const message =  await socketChat.addNewMessage(data,socketAuth.authentication(token),currentRoom);
         socket.broadcast.to(currentRoom).emit("SpreadChatMessage",{message:message});
+        callback(message);
+
     })
     socket.on("GetMessages",async(data,callback)=>{
         const {currentRoom}= data;
