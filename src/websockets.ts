@@ -166,13 +166,15 @@ io.on("connection", (socket) => {
         const { kabanId, title, currentRoom } = data;
         console.log(data)
         await socketKanban.handleUpdateTitle(kabanId, title);
+        await socketWorkspaces.updateDateNow(currentRoom);
         socket.broadcast.to(currentRoom).emit("updateKanbanTitle", { "kanbanTitle": title, "kanbanId": kabanId });
     })
 
     socket.on("updateKanbanMetadata", async (data) => {
         // console.log(data);
-        const { kanbanId, metadata } = data;
+        const { kanbanId, metadata, currentRoom } = data;
         await socketKanban.handleUpdateKanbanMetadata(metadata, kanbanId);
+        await socketWorkspaces.updateDateNow(currentRoom)
 
 
     })

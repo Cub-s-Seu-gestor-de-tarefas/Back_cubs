@@ -28,19 +28,19 @@ class SocketWorkspaces {
             throw new Error("title is empity")
         }
         let loadOrder = {
-            "components":[],
-            "loadOrder":[]
-        } 
-        let MetaChat = {
-            "messages":[]
+            "components": [],
+            "loadOrder": []
         }
-       let stringloadOrder = JSON.stringify(loadOrder);
-       console.log("loadOrder", stringloadOrder)
-       let stringMetachat = JSON.stringify(MetaChat);
+        let MetaChat = {
+            "messages": []
+        }
+        let stringloadOrder = JSON.stringify(loadOrder);
+        console.log("loadOrder", stringloadOrder)
+        let stringMetachat = JSON.stringify(MetaChat);
 
         const workspace = await prismaClient.workspace.create({
             data: {
-                owner: user_id, private: false, title: title, loadOrder: stringloadOrder,  chat:stringMetachat
+                owner: user_id, private: false, title: title, loadOrder: stringloadOrder, chat: stringMetachat
             }
         })
         const newWorkspace = await prismaClient.workspace.findFirst({ where: { owner: user_id, title: title }, select: { id: true, title: true } })
@@ -63,7 +63,7 @@ class SocketWorkspaces {
         if (workspace) {
 
             const getNewMember = await prismaClient.user.findUnique({ where: { email: memberEmail }, select: { id: true, name: true } });
-           
+
             const addNewMember = await prismaClient.members.create({ data: { userName: getNewMember.name, workspaceName: workspace.title, userId: getNewMember.id, workspaceId: workspaceId, admin: admin } })
             const getWorkspaceTitle = await prismaClient.workspace.findFirst({ where: { id: workspaceId }, select: { title: true } })
             const json = {
@@ -75,7 +75,7 @@ class SocketWorkspaces {
         if (member) {
             if (member.admin === true) {
                 const getNewMember = await prismaClient.user.findUnique({ where: { email: memberEmail }, select: { id: true, name: true } });
-              
+
                 const addNewMember = await prismaClient.members.create({ data: { userName: getNewMember.name, workspaceName: member.workspaceName, userId: getNewMember.id, workspaceId: workspaceId, admin: admin } })
                 const getWorkspaceTitle = await prismaClient.workspace.findFirst({ where: { id: workspaceId }, select: { title: true } })
                 const json = {
@@ -92,5 +92,10 @@ class SocketWorkspaces {
 
 
     }
+
+    async updateDateNow(currentRoom) {
+        await prismaClient.workspace.update({where:{id:currentRoom},data:{updated_at:new Date()}})
+    }
+
 }
 export { SocketWorkspaces };
