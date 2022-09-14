@@ -166,7 +166,10 @@ io.on("connection", (socket) => {
         const { kabanId, title, currentRoom } = data;
         console.log(data)
         await socketKanban.handleUpdateTitle(kabanId, title);
-        await socketWorkspaces.updateDateNow(currentRoom);
+      let date =  await socketWorkspaces.updateDateNow(currentRoom);
+      
+      
+      
         socket.broadcast.to(currentRoom).emit("updateKanbanTitle", { "kanbanTitle": title, "kanbanId": kabanId });
     })
 
@@ -174,7 +177,8 @@ io.on("connection", (socket) => {
         // console.log(data);
         const { kanbanId, metadata, currentRoom } = data;
         await socketKanban.handleUpdateKanbanMetadata(metadata, kanbanId);
-        await socketWorkspaces.updateDateNow(currentRoom)
+        let date =  await socketWorkspaces.updateDateNow(currentRoom);
+        
 
 
     })

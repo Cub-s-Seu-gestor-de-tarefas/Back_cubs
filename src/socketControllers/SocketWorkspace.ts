@@ -94,7 +94,11 @@ class SocketWorkspaces {
     }
 
     async updateDateNow(currentRoom) {
-        await prismaClient.workspace.update({where:{id:currentRoom},data:{updated_at:new Date()}})
+        await prismaClient.workspace.update({ where: { id: currentRoom }, data: { updated_at: new Date() } })
+        return new Intl.DateTimeFormat("pt-br", {
+            dateStyle: "full",
+            timeStyle: "full",
+        }).format(new Date());;
     }
 
 }
