@@ -5,12 +5,16 @@ import { sign } from "jsonwebtoken";
 class AuthenticateUserController{
 async handle(request: Request, response: Response){
     const { email, password } = request.body;
-    const user = await prismaClient.user.findFirst({ where: { email: email } });
+    const user = await prismaClient.user.findUnique({ where: { email: email } });
     if (!user) {
       throw new Error("E-mail & Senha incorretos!!!");
     }
+    if (user.email != email) {
+      throw new Error("E-mail & Senha incorretos!!!☣");
+    }
+
    
-    console.log(user)
+    console.log(user,user.email != email)
     console.log(password)
 
 
