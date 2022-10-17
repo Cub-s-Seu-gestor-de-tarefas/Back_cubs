@@ -21,8 +21,8 @@ model User {
   Workspace  Workspace[]
   TaskList   TaskList[]
   Post       Post[]
-  
-  members    Members[]
+
+  members Members[]
 
   @@map("user")
 }
@@ -36,6 +36,8 @@ model Members {
   workspaceId   String?
   Workspace     Workspace? @relation(fields: [workspaceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   User          User?      @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
 }
 
 model Workspace {
@@ -59,17 +61,15 @@ model Workspace {
 }
 
 model Kanban {
-  id       String @id @default(uuid())
-  Title    String
-  metadata String @db.MediumText
+  id          String    @id @default(uuid())
+  Title       String
+  metadata    String    @db.MediumText
   Workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   workspaceId String
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
 
   @@map("kanban")
-
-
 }
 
 model Task {
@@ -79,7 +79,6 @@ model Task {
   created_at DateTime   @default(now())
   updated_at DateTime   @updatedAt
   TaskList   TaskList[]
-
 
   @@map("task")
 }
@@ -107,18 +106,16 @@ model TaskList {
   created_at  DateTime   @default(now())
   updated_at  DateTime   @updatedAt
 
-
   @@map("task_list")
 }
 
 model Note {
   id          String     @id @default(uuid())
-  text        String    @db.MediumText
+  text        String     @db.MediumText
   Workspace   Workspace? @relation(fields: [workspaceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   workspaceId String?
   created_at  DateTime   @default(now())
   updated_at  DateTime   @updatedAt
-
 
   @@map("note")
 }
@@ -143,7 +140,6 @@ model Canva_column {
   Post    Post?   @relation(fields: [postId], references: [id])
   postId  String?
 
-
   @@map("canva_column")
 }
 
@@ -161,7 +157,7 @@ model Post {
 model Table {
   id          String     @id @default(uuid())
   tableName   String
-  JsonString   String @db.MediumText
+  JsonString  String     @db.MediumText
   Workspace   Workspace? @relation(fields: [workspaceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   workspaceId String
 

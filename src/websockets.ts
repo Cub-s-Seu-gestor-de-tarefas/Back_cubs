@@ -211,6 +211,15 @@ io.on("connection", (socket) => {
       callback(dados)
     })
 
+    socket.on("LeftRoom", async(data,callback)=>{
+        const {Token,room}=data;
+        const id = socketAuth.authentication(Token);
+        console.log(id,room)
+        await socketWorkspaces.dropRoom(id,room);
+        const rooms = await socketWorkspaces.handleListWorkspace(id);
+        
+        callback(rooms);
+    })
 
 });
 

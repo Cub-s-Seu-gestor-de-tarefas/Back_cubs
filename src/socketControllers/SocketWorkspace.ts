@@ -101,5 +101,37 @@ class SocketWorkspaces {
         }).format(new Date());;
     }
 
+    async dropRoom(userId: string, room: string) {
+        //checar se é o dono da sala
+
+        const ownerId = await prismaClient.workspace.findUnique({ where: { id: room }, select: { owner: true } });
+        if (ownerId.owner === userId) {
+            console.log("leme")
+            // o interresante é pegar o membro mais antigo da sala e ele virar o dono dela 
+            // caso não haja um membro para ser dono apagar a sala
+            const oldestMember = await prismaClient.members.findMany({ where: { workspaceId: room }, select: { userId: true,id:true }, orderBy: { created_at: "desc" } })
+            console.log(oldestMember.length)
+            if (oldestMember.length === 0) {
+                console.log("orgasmo")
+                await prismaClient.workspace.delete({ where: { id: room } })
+
+            } else {
+                console.log("assasinato")
+               
+               
+                await prismaClient.members.delete({ where: { id: oldestMember[0].id } })
+                await prismaClient.workspace.update({ where: { id: room }, data: { owner: oldestMember[0].userId } });
+            }
+
+        } else {
+            console.log("agiota")
+            // apagar o registro de membro na sala
+            const { id } = await prismaClient.members.findFirst({ where: { userId: userId, workspaceId: room }, select: { id: true } })
+            await prismaClient.members.delete({ where: { id: id } })
+        }
+
+
+    }
+
 }
 export { SocketWorkspaces };
