@@ -6,6 +6,7 @@ const app = express();
 import "express-async-errors";
 import {router} from "./routes";
 app.use(cors());
+app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 app.use(router);
 app.use(
