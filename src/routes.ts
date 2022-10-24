@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
         callback(null, path.resolve(__dirname, "public", "userprofile"))
     }, filename: (req, file, callback) => {
         const time = new Date().getTime();
-        const title = `${time}_${file.originalname}`;
+        const title = `${time}_${file.originalname.replace(" ","_")}`;
         callback(null, title)
     }
 })
