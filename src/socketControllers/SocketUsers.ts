@@ -24,13 +24,18 @@ class SocketUsers {
         return email.email;
     }
     async getProfileData(id: string) {
-        const user = await prismaClient.user.findFirst({ where: { id: id }, select: { img: true, email: true, name: true } });
+        const user = await prismaClient.user.findFirst({ where: { id: id }, select: { img: true, email: true, name: true,created_at:true } });
         const data = {
             email: user.email,
             icon: user.img,
-            name: user.name
+            name: user.name,
+            created_at:user.created_at
         }
         return data;
+    }
+    async changeUserName(id,name){
+       await prismaClient.user.update({where:{id:id},data:{name:name}})
+
     }
 }
 export { SocketUsers };

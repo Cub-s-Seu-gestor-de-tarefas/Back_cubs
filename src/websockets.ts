@@ -103,15 +103,15 @@ io.on("connection", (socket) => {
     });
 
     socket.on("getMembers", async (data, callback) => {
-        const {email,token}=data;
+        const { email, token } = data;
         console.log(data)
         const emails = await socketUsers.getMembers(email);
-      const id =  socketAuth.authentication(token);
+        const id = socketAuth.authentication(token);
         const userEmail = await socketUsers.getUserEmail(id);
-        console.log("userEmail: ",userEmail);
-       const newEmails = emails.filter(d=> d.email === userEmail ? false : true )
+        console.log("userEmail: ", userEmail);
+        const newEmails = emails.filter(d => d.email === userEmail ? false : true)
         //aplicar um filter no array de email com o email do usuario estraido via token
-        console.log( newEmails);
+        console.log(newEmails);
         callback(newEmails);
     });
 
@@ -166,10 +166,10 @@ io.on("connection", (socket) => {
         const { kabanId, title, currentRoom } = data;
         console.log(data)
         await socketKanban.handleUpdateTitle(kabanId, title);
-      let date =  await socketWorkspaces.updateDateNow(currentRoom);
-      
-      
-      
+        let date = await socketWorkspaces.updateDateNow(currentRoom);
+
+
+
         socket.broadcast.to(currentRoom).emit("updateKanbanTitle", { "kanbanTitle": title, "kanbanId": kabanId });
     })
 
@@ -177,48 +177,54 @@ io.on("connection", (socket) => {
         // console.log(data);
         const { kanbanId, metadata, currentRoom } = data;
         await socketKanban.handleUpdateKanbanMetadata(metadata, kanbanId);
-        let date =  await socketWorkspaces.updateDateNow(currentRoom);
-        
+        let date = await socketWorkspaces.updateDateNow(currentRoom);
+
 
 
     })
 
     socket.on("spredingkanban", (data) => {
-        let { metadata, kanbanId ,currentRoom} = data;
-      
-        socket.broadcast.to(currentRoom).emit("gettingSpreadData",{metadata:metadata,kanbanId:kanbanId})
+        let { metadata, kanbanId, currentRoom } = data;
+
+        socket.broadcast.to(currentRoom).emit("gettingSpreadData", { metadata: metadata, kanbanId: kanbanId })
     })
 
-    socket.on("chatNewMessage",async(d,callback)=>{
-        
-        const{token,data,currentRoom}=d;
-       //criar um callback para adicionar a mensagem escrita
-      const message =  await socketChat.addNewMessage(data,socketAuth.authentication(token),currentRoom);
-        socket.broadcast.to(currentRoom).emit("SpreadChatMessage",{message:message});
+    socket.on("chatNewMessage", async (d, callback) => {
+
+        const { token, data, currentRoom } = d;
+        //criar um callback para adicionar a mensagem escrita
+        const message = await socketChat.addNewMessage(data, socketAuth.authentication(token), currentRoom);
+        socket.broadcast.to(currentRoom).emit("SpreadChatMessage", { message: message });
         callback(message);
 
     })
-    socket.on("GetMessages",async(data,callback)=>{
-        const {currentRoom}= data;
-       const messages =await socketChat.getMessages(currentRoom);
-       
-       callback(messages)
+    socket.on("GetMessages", async (data, callback) => {
+        const { currentRoom } = data;
+        const messages = await socketChat.getMessages(currentRoom);
+
+        callback(messages)
 
     })
-    socket.on("getProfileData",async(data,callback)=>{
-        const {Token}= data;
-       const dados = await socketUsers.getProfileData(socketAuth.authentication(Token));
-      callback(dados)
+    socket.on("getProfileData", async (data, callback) => {
+        const { Token } = data;
+        const dados = await socketUsers.getProfileData(socketAuth.authentication(Token));
+        callback(dados)
     })
 
-    socket.on("LeftRoom", async(data,callback)=>{
-        const {Token,room}=data;
+    socket.on("LeftRoom", async (data, callback) => {
+        const { Token, room } = data;
         const id = socketAuth.authentication(Token);
-        console.log(id,room)
-        await socketWorkspaces.dropRoom(id,room);
+        console.log(id, room)
+        await socketWorkspaces.dropRoom(id, room);
         const rooms = await socketWorkspaces.handleListWorkspace(id);
-        
+
         callback(rooms);
+    })
+
+    socket.on("changeUserName", async (data,callback) => {
+        const { Token, name } = data;
+       await socketUsers.changeUserName(socketAuth.authentication(Token),name);
+       callback(name)
     })
 
 });
