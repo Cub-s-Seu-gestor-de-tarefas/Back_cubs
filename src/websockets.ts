@@ -235,6 +235,11 @@ io.on("connection", (socket) => {
         socket.broadcast.to(currentRoom).emit("SpreadingYoutubeLink",{link:link,youtubeId:youtubeId})
     })
 
+    socket.on("changeAnimalProfile",async(data,callback)=>{
+        const {Token,animal} = data;
+        socketUsers.changeAnimal(socketAuth.authentication(Token),animal);
+        callback(animal)
+    })
 });
 
 console.log(users);

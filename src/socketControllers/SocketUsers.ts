@@ -37,5 +37,8 @@ class SocketUsers {
        await prismaClient.user.update({where:{id:id},data:{name:name}})
 
     }
+    async changeAnimal(id,animal){
+        await prismaClient.user.update({where:{id:id},data:{img:animal}})
+    }
 }
 export { SocketUsers };
