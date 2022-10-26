@@ -7,6 +7,7 @@ import { SocketUsers } from "./socketControllers/SocketUsers";
 // import { prismaClient } from "../src/database/prismaClient";
 
 import { SocketWorkspaces } from "./socketControllers/SocketWorkspace";
+import { SocketYoutube } from "./socketControllers/SocketYoutube";
 
 
 
@@ -23,7 +24,7 @@ const socketUsers = new SocketUsers();
 const socketDocument = new SocketDocument();
 const socketKanban = new SocketKanban();
 const socketChat = new SocketChat();
-
+const socketYoutube = new SocketYoutube();
 
 let user_id = "";
 
@@ -221,10 +222,17 @@ io.on("connection", (socket) => {
         callback(rooms);
     })
 
-    socket.on("changeUserName", async (data,callback) => {
+    socket.on("changeUserName", async (data, callback) => {
         const { Token, name } = data;
-       await socketUsers.changeUserName(socketAuth.authentication(Token),name);
-       callback(name)
+        await socketUsers.changeUserName(socketAuth.authentication(Token), name);
+        callback(name)
+    })
+
+    socket.on("UpdateYoutubeLink", async (data) => {
+
+        const { youtubeId, link, currentRoom } = data;
+        await socketYoutube.updateYoutube(youtubeId,  link)
+        socket.broadcast.to(currentRoom).emit("SpreadingYoutubeLink",{link:link,youtubeId:youtubeId})
     })
 
 });

@@ -68,7 +68,10 @@ class SocketDocument {
                     const noteData = await prismaClient.note.findFirst({ where: { id: components[i].compID }, select: { text: true } });
                     components[i].compData = { text: noteData.text };
                     break;
-
+                case "Youtube":
+                    const youtubeLink = await prismaClient.youtube.findFirst({where:{id:components[i].compID},select:{link:true}});
+                    components[i].compData = {link:youtubeLink.link};
+                    break;
 
             }
 
@@ -154,6 +157,15 @@ class SocketDocument {
                     // console.log("New Component:  ", data)
                     return data;
                     break;
+                case "Youtube":
+                    const {link} = await prismaClient.youtube.findFirst({where:{id:newComponent.compID},select:{link:true}});
+                    newComponent.compData={link:link}
+                    data = {
+                        newComponent: newComponent,
+                        position: position
+                    }
+                    // console.log("New Component:  ", data)
+                    return data;
 
 
             }
@@ -198,7 +210,24 @@ class SocketDocument {
             columnOrder: [0, 1, 2, 3, 4]
         }
         const metaTable = {
-            content: { column: ["ice", "fire", "ground"], value: ["1", "2"] }
+            columns: [
+                ["Nomes dos integrantes", "Cargo", "Função"],
+                [
+                  "Kaique",
+                  "Back-end",
+                  "Trabalhar com os dados, API e ter acesso ao client-side.",
+                ],
+                [
+                  "Júlia",
+                  "Monografia",
+                  "Testar a plataforma, gerir o processo criativo e documentar todo o projeto.",
+                ],
+                [
+                  "Helder",
+                  "Front-end",
+                  "UI, UX, Gerenciar componentes e criar telas e ter acesso ao server-side.",
+                ],
+              ],
         }
 
 
@@ -230,9 +259,13 @@ class SocketDocument {
                 return await getCompData(newComp);
 
                 break;
-            case "Calendar":
-                console.log("criar o calendario!!!")
-                break;
+            case "Youtube":
+                const youtube = await prismaClient.youtube.create({data:{link:"",workspaceId: currentRoom}});
+                component.compID = youtube.id;
+                console.log(component);
+                newComp = await updateLoadOrder(currentRoom, component)
+                return await getCompData(newComp);
+
 
 
         }
