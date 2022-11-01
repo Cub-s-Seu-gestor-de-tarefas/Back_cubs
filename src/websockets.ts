@@ -3,6 +3,7 @@ import { SocketAuth } from "./socketControllers/SocketAuth";
 import { SocketChat } from "./socketControllers/SocketChat";
 import { SocketDocument } from "./socketControllers/SocketDocument";
 import { SocketKanban } from "./socketControllers/SocketKanban";
+import { SocketNote } from "./socketControllers/SocketNote";
 import { SocketUsers } from "./socketControllers/SocketUsers";
 // import { prismaClient } from "../src/database/prismaClient";
 
@@ -25,6 +26,7 @@ const socketDocument = new SocketDocument();
 const socketKanban = new SocketKanban();
 const socketChat = new SocketChat();
 const socketYoutube = new SocketYoutube();
+const socketNote = new SocketNote();
 
 let user_id = "";
 
@@ -240,6 +242,14 @@ io.on("connection", (socket) => {
         socketUsers.changeAnimal(socketAuth.authentication(Token),animal);
         callback(animal)
     })
+
+  socket.on("NoteUpdatingText",async (data)=>{
+       const{currentRoom,NoteId,text}=data;
+       console.table(data)
+      socketNote.updateNote(NoteId,text)
+      socket.broadcast.to(currentRoom).emit("SpreadingNoteText",{text:text,NoteId:NoteId})
+  })
+
 });
 
 console.log(users);
