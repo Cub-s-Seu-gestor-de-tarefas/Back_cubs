@@ -72,7 +72,10 @@ class SocketDocument {
                     const youtubeLink = await prismaClient.youtube.findFirst({where:{id:components[i].compID},select:{link:true}});
                     components[i].compData = {link:youtubeLink.link};
                     break;
-
+                case "Image":
+                    const imagePath = await prismaClient.image.findFirst({where:{id:components[i].compID},select:{path:true}});
+                    components[i].compData = {path:imagePath.path};
+                    break;
             }
 
         }
@@ -166,7 +169,15 @@ class SocketDocument {
                     }
                     // console.log("New Component:  ", data)
                     return data;
-
+                case "Image":
+                    const {path}= await prismaClient.image.findFirst({where:{id:newComponent.compID},select:{path:true}});
+                    newComponent.compData={path:path}
+                    data = {
+                        newComponent: newComponent,
+                        position: position
+                    }
+                    // console.log("New Component:  ", data)
+                    return data;
 
             }
 
@@ -265,8 +276,11 @@ class SocketDocument {
                 console.log(component);
                 newComp = await updateLoadOrder(currentRoom, component)
                 return await getCompData(newComp);
-
-
+            case "Image":
+                const image = await prismaClient.image.create({data:{workspaceId:currentRoom,path:""}})
+                component.compID = image.id;
+                newComp = await updateLoadOrder(currentRoom, component)
+                return await getCompData(newComp);
 
         }
 
