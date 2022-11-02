@@ -76,6 +76,10 @@ class SocketDocument {
                     const imagePath = await prismaClient.image.findFirst({where:{id:components[i].compID},select:{path:true}});
                     components[i].compData = {path:imagePath.path};
                     break;
+                case "Checklist":
+                    const checklisData = await prismaClient.checkList.findFirst({where:{id:components[i].compID},select:{metadata:true}});
+                    components[i].compData = {data:checklisData.metadata};
+                    break;
             }
 
         }
@@ -178,7 +182,15 @@ class SocketDocument {
                     }
                     // console.log("New Component:  ", data)
                     return data;
-
+                case "Checklist":
+                    const {metadata}= await prismaClient.checkList.findFirst({where:{id:newComponent.compID},select:{metadata:true}});
+                    newComponent.compData={metadata:metadata}
+                    data = {
+                        newComponent: newComponent,
+                        position: position
+                    }
+                    // console.log("New Component:  ", data)
+                    return data;
             }
 
         }
@@ -240,7 +252,23 @@ class SocketDocument {
                 ],
               ],
         }
-
+        const checklistMetadata = [
+            {
+                taskId:1,
+                taskState:false,
+                taskContent:"Comprar pão às 16h"
+            },
+            {
+                taskId:2,
+                taskState:false,
+                taskContent:"Fazer notification p/ Cub's"
+            },
+            {
+                taskId:3,
+                taskState:true,
+                taskContent:"Estudar o componente Calendário"
+            },
+        ]
 
         const type = component.compType;
         console.log("c", component, type)
@@ -281,8 +309,13 @@ class SocketDocument {
                 component.compID = image.id;
                 newComp = await updateLoadOrder(currentRoom, component)
                 return await getCompData(newComp);
-
-        }
+            case "Checklist":
+                const checklist = await prismaClient.checkList.create({data:{metadata:JSON.stringify(checklistMetadata),workspaceId:currentRoom}})
+                component.compID = checklist.id;
+                newComp = await updateLoadOrder(currentRoom, component)
+                return await getCompData(newComp);
+      
+            }
 
 
     }
