@@ -205,27 +205,27 @@ class SocketDocument {
             columns: [
                 {
                     id: "0",
-                    title: "Ice box",
+                    title: "Caixa de entrada",
                     color: "#1b95df",
                     taskIds: [0, 1, 2],
                 }, {
                     id: "1",
-                    title: "Emergency",
-                    color: "#ff0f42",
+                    title: "Emergência",
+                    color: "#e4254f",
                     taskIds: [],
                 }, {
                     id: "2",
-                    title: "In Progress",
-                    color: "#f6d30e",
+                    title: "Em Andamento",
+                    color: "#e0c111",
                     taskIds: [],
                 }, {
                     id: "3",
-                    title: "Testing",
+                    title: "Em teste",
                     color: "#8321db",
                     taskIds: [],
                 }, {
                     id: "4",
-                    title: "Done",
+                    title: "Concluído",
                     color: "#32d762",
                     taskIds: [],
                 }
