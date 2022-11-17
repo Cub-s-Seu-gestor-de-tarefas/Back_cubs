@@ -1,4 +1,6 @@
 import { serverHTTP } from "./http"
 import './websockets';
 
-serverHTTP.listen(3001,()=>{console.log("server is running")});
+const PORT = process.env.PORT || 3001
+
+serverHTTP.listen(PORT,()=>{console.log("server is running")});
