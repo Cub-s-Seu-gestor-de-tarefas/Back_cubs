@@ -2,6 +2,7 @@ import { io } from "./http";
 import { SocketAuth } from "./socketControllers/SocketAuth";
 import { SocketChat } from "./socketControllers/SocketChat";
 import { SocketDocument } from "./socketControllers/SocketDocument";
+import { SocketImage } from "./socketControllers/SocketImage";
 import { SocketKanban } from "./socketControllers/SocketKanban";
 import { SocketNote } from "./socketControllers/SocketNote";
 import { SocketUsers } from "./socketControllers/SocketUsers";
@@ -27,6 +28,7 @@ const socketKanban = new SocketKanban();
 const socketChat = new SocketChat();
 const socketYoutube = new SocketYoutube();
 const socketNote = new SocketNote();
+const socketImage = new SocketImage();
 
 let user_id = "";
 
@@ -249,6 +251,17 @@ io.on("connection", (socket) => {
       socketNote.updateNote(NoteId,text)
       socket.broadcast.to(currentRoom).emit("SpreadingNoteText",{text:text,NoteId:NoteId})
   })
+
+
+
+socket.on("UploadLinkImage",async(data)=>{
+// console.table(data)
+const {currentRoom,imageId,link} = data;
+await socketImage.UpdateLink(imageId,link)
+socket.broadcast.to(currentRoom).emit("SpredingLoadImage",{imageId:imageId,link:link})
+
+})
+
 
 });
 
