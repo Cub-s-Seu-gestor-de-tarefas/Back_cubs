@@ -9,16 +9,28 @@ import path from "path";
 import { hash } from "bcryptjs";
 import { UploadsController } from "@controllers/UploadsController";
 const multerconfig = multer();
-const storage = multer.diskStorage({
+const storageProfile = multer.diskStorage({
     destination: (req, file, callback) => {
         callback(null, path.resolve(__dirname, "public", "userprofile"))
     }, filename: (req, file, callback) => {
         const time = new Date().getTime();
-        const title = `${time}_${file.originalname.replace(" ","_")}`;
+        const title = `${time}_${file.originalname.replace( /[ ]/g,"_").replace(/[`~!@#$%^&*()_|+\-=?;:'",<>{}\[\]\\\/]/g,"_")}`;
         callback(null, title)
     }
 })
-const profileIMG = multer({ storage: storage });
+const storageDocument = multer.diskStorage({
+    destination: (req, file, callback) => {
+        console.log(file)
+        callback(null, path.resolve(__dirname, "public", "Document"))
+    }, filename: (req, file, callback) => {
+        const time = new Date().getTime();
+
+        const title = `${time}_${file.originalname.replace( /[ ]/g,"_").replace(/[`~!@#$%^&*()_|+\-=?;:'",<>{}\[\]\\\/]/g,"_")}`;
+        callback(null, title)
+    }
+})
+const profileIMG = multer({ storage: storageProfile });
+const documentIMG = multer({ storage: storageDocument });
 const router = Router();
 const uploadsController = new UploadsController();
 const tableController = new TableController();
@@ -33,6 +45,7 @@ router.post('/TableRead', tableController.handleRead);
 router.post("/TableDelete", tableController.handleDelete);
 router.post("/ExcelUpload", multerconfig.single("file"), tableController.handleExcelUpload);
 router.post("/ProfileImageUpload",ensureAuthenticated, profileIMG.single("file"), uploadsController.userproflie);
+router.post("/DocumentImageUpload", documentIMG.single("file"), uploadsController.DocumentImage);
 
 
 router.post("/CreateUser", createUserController.handle);

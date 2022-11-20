@@ -261,6 +261,11 @@ await socketImage.UpdateLink(imageId,link)
 socket.broadcast.to(currentRoom).emit("SpredingLoadImage",{imageId:imageId,link:link})
 
 })
+socket.on("uploadImageReflect",(data)=>{
+    const {currentRoom,imageId,link} = data;
+    console.table(data)
+    socket.broadcast.to(currentRoom).emit("SpredingLoadImage",{imageId:imageId,link:link})
+})
 
 
 });
