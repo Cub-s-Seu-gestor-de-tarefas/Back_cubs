@@ -5,6 +5,7 @@ import { SocketDocument } from "./socketControllers/SocketDocument";
 import { SocketImage } from "./socketControllers/SocketImage";
 import { SocketKanban } from "./socketControllers/SocketKanban";
 import { SocketNote } from "./socketControllers/SocketNote";
+import { SocketTable } from "./socketControllers/SocketTable";
 import { SocketUsers } from "./socketControllers/SocketUsers";
 // import { prismaClient } from "../src/database/prismaClient";
 
@@ -29,6 +30,8 @@ const socketChat = new SocketChat();
 const socketYoutube = new SocketYoutube();
 const socketNote = new SocketNote();
 const socketImage = new SocketImage();
+const socketTable = new SocketTable();
+
 
 let user_id = "";
 
@@ -235,37 +238,45 @@ io.on("connection", (socket) => {
     socket.on("UpdateYoutubeLink", async (data) => {
 
         const { youtubeId, link, currentRoom } = data;
-        await socketYoutube.updateYoutube(youtubeId,  link)
-        socket.broadcast.to(currentRoom).emit("SpreadingYoutubeLink",{link:link,youtubeId:youtubeId})
+        await socketYoutube.updateYoutube(youtubeId, link)
+        socket.broadcast.to(currentRoom).emit("SpreadingYoutubeLink", { link: link, youtubeId: youtubeId })
     })
 
-    socket.on("changeAnimalProfile",async(data,callback)=>{
-        const {Token,animal} = data;
-        socketUsers.changeAnimal(socketAuth.authentication(Token),animal);
+    socket.on("changeAnimalProfile", async (data, callback) => {
+        const { Token, animal } = data;
+        socketUsers.changeAnimal(socketAuth.authentication(Token), animal);
         callback(animal)
     })
 
-  socket.on("NoteUpdatingText",async (data)=>{
-       const{currentRoom,NoteId,text}=data;
-       console.table(data)
-      socketNote.updateNote(NoteId,text)
-      socket.broadcast.to(currentRoom).emit("SpreadingNoteText",{text:text,NoteId:NoteId})
-  })
+    socket.on("NoteUpdatingText", async (data) => {
+        const { currentRoom, NoteId, text } = data;
+        console.table(data)
+        socketNote.updateNote(NoteId, text)
+        socket.broadcast.to(currentRoom).emit("SpreadingNoteText", { text: text, NoteId: NoteId })
+    })
 
 
 
-socket.on("UploadLinkImage",async(data)=>{
-// console.table(data)
-const {currentRoom,imageId,link} = data;
-await socketImage.UpdateLink(imageId,link)
-socket.broadcast.to(currentRoom).emit("SpredingLoadImage",{imageId:imageId,link:link})
+    socket.on("UploadLinkImage", async (data) => {
+        // console.table(data)
+        const { currentRoom, imageId, link } = data;
+        await socketImage.UpdateLink(imageId, link)
+        socket.broadcast.to(currentRoom).emit("SpredingLoadImage", { imageId: imageId, link: link })
 
-})
-socket.on("uploadImageReflect",(data)=>{
-    const {currentRoom,imageId,link} = data;
-    console.table(data)
-    socket.broadcast.to(currentRoom).emit("SpredingLoadImage",{imageId:imageId,link:link})
-})
+    })
+    socket.on("uploadImageReflect", (data) => {
+        const { currentRoom, imageId, link } = data;
+        console.table(data)
+        socket.broadcast.to(currentRoom).emit("SpredingLoadImage", { imageId: imageId, link: link })
+    })
+
+    socket.on("UpdateTableMetadata", async (data) => {
+        const { tableId,metadata, currentRoom } = data;
+          await socketTable.updateMetadata(tableId,metadata);
+          socket.broadcast.to(currentRoom).emit("SpredingTableMetadata",{tableId:tableId,metadata:metadata})
+
+    })
+
 
 
 });

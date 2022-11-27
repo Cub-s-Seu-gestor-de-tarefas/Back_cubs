@@ -5,10 +5,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
-datasource db { 
-  provider = "mysql" 
-  url      = env("DATABASE_URL") 
-} 
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
 
 model User {
   id         String      @id @default(uuid())
@@ -19,7 +19,7 @@ model User {
   created_at DateTime    @default(now())
   updated_at DateTime    @updatedAt
   Workspace  Workspace[]
-  members Members[]
+  members    Members[]
 
   @@map("user")
 }
@@ -38,24 +38,23 @@ model Members {
 }
 
 model Workspace {
-  id         String    @id @default(uuid())
-  title      String
-  private    Boolean
-  User       User?     @relation(fields: [owner], references: [id], onUpdate: Cascade)
-  owner      String
-  loadOrder  String    @db.MediumText
-  chat       String    @db.MediumText
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  members    Members[]
-
-  Note Note[]
-
-  Table     Table[]
-  Kanban    Kanban[]
-  Youtube   Youtube[]
-  CheckList CheckList[]
-  Image     Image[]
+  id           String      @id @default(uuid())
+  title        String
+  private      Boolean
+  User         User?       @relation(fields: [owner], references: [id], onUpdate: Cascade)
+  owner        String
+  loadOrder    String      @db.MediumText
+  chat         String      @db.MediumText
+  notification String      @db.MediumText
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
+  members      Members[]
+  Note         Note[]
+  Table        Table[]
+  Kanban       Kanban[]
+  Youtube      Youtube[]
+  CheckList    CheckList[]
+  Image        Image[]
 
   @@map("workspace")
 }
