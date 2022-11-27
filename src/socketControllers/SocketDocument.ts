@@ -234,21 +234,21 @@ class SocketDocument {
         }
         const metaTable = {
             columns: [
-                ["Nomes dos integrantes", "Cargo", "Função"],
+                ["", "", ""],
                 [
-                  "Kaique",
-                  "Back-end",
-                  "Trabalhar com os dados, API e ter acesso ao client-side.",
+                  "",
+                  "",
+                  "",
                 ],
                 [
-                  "Júlia",
-                  "Monografia",
-                  "Testar a plataforma, gerir o processo criativo e documentar todo o projeto.",
+                  "",
+                  "",
+                  "",
                 ],
                 [
-                  "Helder",
-                  "Front-end",
-                  "UI, UX, Gerenciar componentes e criar telas e ter acesso ao server-side.",
+                  "",
+                  "",
+                  "",
                 ],
               ],
         }
