@@ -82,46 +82,56 @@ class TableController {
 
 
     }
-    async handleExcelUpload(request: Request, response: Response){
+    async handleExcelUpload(request: Request, response: Response) {
         const { buffer } = request.file;
+        const  tableId = request.headers.authorization;
 
         const readablefile = new Readable();
         readablefile.push(buffer);
         readablefile.push(null);
-    
+
         const productLine = readLine.createInterface({ input: readablefile, });
         const product = [];
         const title = [];
         let i = 0;
         for await (let line of productLine) {
             let string = line.split(";");
-           
+
             if (i === 0) {
-    
+
                 for (let o = 0; o < string.length; o++) {
                     title.push(string[o]);
-    
+
                 }
-    
+
             }
-    
+
             if (i > 0) {
-                let j = {};
+                // let j = {};
+                // for (let data = 0; data < title.length; data++) {
+
+                //     j[title[data]] = string[data] === null ? "" : string[data];
+
+                // }
+                let arrayTable = [];
                 for (let data = 0; data < title.length; data++) {
-    
-                    j[title[data]] = string[data] === null ? "" : string[data];
-    
+
+                    // j[title[data]] = string[data] === null ? "" : string[data];
+                    arrayTable.push(string[data] === null ? "" : string[data])
+
                 }
-                product.push(j);
-               
+                product.push(arrayTable);
+
             }
             i++;
         }
-      console.log(product)
+        console.log(product)
+        let execelMetadataString = JSON.stringify({ columns: product })
+        await prismaClient.table.update({ where: { id: tableId }, data: { JsonString: execelMetadataString } })
 
-//atualizar para salvar no database com workspace e user_id a tabela como JSON.stringfy() 
-    
-        return response.json({ Product: product });
+        //atualizar para salvar no database com workspace e user_id a tabela como JSON.stringfy() 
+
+        return response.json({ columns: product });
     }
 
 

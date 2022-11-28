@@ -277,7 +277,11 @@ io.on("connection", (socket) => {
 
     })
 
-
+    socket.on("uploadTableReflect", (data) => {
+        const { currentRoom, tableId, metadata } = data;
+        console.table(data)
+        socket.broadcast.to(currentRoom).emit("SpredingTableMetadata", {tableId:tableId,metadata:metadata})
+    })
 
 });
 

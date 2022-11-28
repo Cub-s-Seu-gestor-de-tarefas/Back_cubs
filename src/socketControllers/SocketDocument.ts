@@ -69,16 +69,17 @@ class SocketDocument {
                     components[i].compData = { text: noteData.text };
                     break;
                 case "Youtube":
-                    const youtubeLink = await prismaClient.youtube.findFirst({where:{id:components[i].compID},select:{link:true}});
-                    components[i].compData = {link:youtubeLink.link};
+                    const youtubeLink = await prismaClient.youtube.findFirst({ where: { id: components[i].compID }, select: { link: true } });
+                    components[i].compData = { link: youtubeLink.link };
                     break;
                 case "Image":
-                    const imagePath = await prismaClient.image.findFirst({where:{id:components[i].compID},select:{path:true}});
-                    components[i].compData = {path:imagePath.path};
+                    const imagePath = await prismaClient.image.findFirst({ where: { id: components[i].compID }, select: { path: true } });
+                    components[i].compData = { path: imagePath.path };
                     break;
                 case "Checklist":
-                    const checklisData = await prismaClient.checkList.findFirst({where:{id:components[i].compID},select:{metadata:true}});
-                    components[i].compData = {data:checklisData.metadata};
+                    const checklisData = await prismaClient.checkList.findFirst({ where: { id: components[i].compID }, select: { metadata: true } });
+                   let check = JSON.parse(checklisData.metadata)
+                    components[i].compData = { data: check  };
                     break;
             }
 
@@ -165,8 +166,8 @@ class SocketDocument {
                     return data;
                     break;
                 case "Youtube":
-                    const {link} = await prismaClient.youtube.findFirst({where:{id:newComponent.compID},select:{link:true}});
-                    newComponent.compData={link:link}
+                    const { link } = await prismaClient.youtube.findFirst({ where: { id: newComponent.compID }, select: { link: true } });
+                    newComponent.compData = { link: link }
                     data = {
                         newComponent: newComponent,
                         position: position
@@ -174,8 +175,8 @@ class SocketDocument {
                     // console.log("New Component:  ", data)
                     return data;
                 case "Image":
-                    const {path}= await prismaClient.image.findFirst({where:{id:newComponent.compID},select:{path:true}});
-                    newComponent.compData={path:path}
+                    const { path } = await prismaClient.image.findFirst({ where: { id: newComponent.compID }, select: { path: true } });
+                    newComponent.compData = { path: path }
                     data = {
                         newComponent: newComponent,
                         position: position
@@ -183,8 +184,9 @@ class SocketDocument {
                     // console.log("New Component:  ", data)
                     return data;
                 case "Checklist":
-                    const {metadata}= await prismaClient.checkList.findFirst({where:{id:newComponent.compID},select:{metadata:true}});
-                    newComponent.compData={metadata:metadata}
+                    const { metadata } = await prismaClient.checkList.findFirst({ where: { id: newComponent.compID }, select: { metadata: true } });
+                    let datinha = JSON.parse(metadata)
+                    newComponent.compData = datinha 
                     data = {
                         newComponent: newComponent,
                         position: position
@@ -236,39 +238,41 @@ class SocketDocument {
             columns: [
                 ["", "", ""],
                 [
-                  "",
-                  "",
-                  "",
+                    "",
+                    "",
+                    "",
                 ],
                 [
-                  "",
-                  "",
-                  "",
+                    "",
+                    "",
+                    "",
                 ],
                 [
-                  "",
-                  "",
-                  "",
+                    "",
+                    "",
+                    "",
                 ],
-              ],
+            ],
         }
-        const checklistMetadata = [
-            {
-                taskId:1,
-                taskState:false,
-                taskContent:"Comprar pão às 16h"
-            },
-            {
-                taskId:2,
-                taskState:false,
-                taskContent:"Fazer notification p/ Cub's"
-            },
-            {
-                taskId:3,
-                taskState:true,
-                taskContent:"Estudar o componente Calendário"
-            },
-        ]
+        const checklistMetadata = {
+            tasks: [
+                {
+                    taskId: 1,
+                    taskState: false,
+                    taskContent: "Comprar pão às 16h"
+                },
+                {
+                    taskId: 2,
+                    taskState: false,
+                    taskContent: "Fazer notification p/ Cub's"
+                },
+                {
+                    taskId: 3,
+                    taskState: true,
+                    taskContent: "Estudar o componente Calendário"
+                },
+            ]
+        }
 
         const type = component.compType;
         console.log("c", component, type)
@@ -299,23 +303,23 @@ class SocketDocument {
 
                 break;
             case "Youtube":
-                const youtube = await prismaClient.youtube.create({data:{link:"",workspaceId: currentRoom}});
+                const youtube = await prismaClient.youtube.create({ data: { link: "", workspaceId: currentRoom } });
                 component.compID = youtube.id;
                 console.log(component);
                 newComp = await updateLoadOrder(currentRoom, component)
                 return await getCompData(newComp);
             case "Image":
-                const image = await prismaClient.image.create({data:{workspaceId:currentRoom,path:""}})
+                const image = await prismaClient.image.create({ data: { workspaceId: currentRoom, path: "" } })
                 component.compID = image.id;
                 newComp = await updateLoadOrder(currentRoom, component)
                 return await getCompData(newComp);
             case "Checklist":
-                const checklist = await prismaClient.checkList.create({data:{metadata:JSON.stringify(checklistMetadata),workspaceId:currentRoom}})
+                const checklist = await prismaClient.checkList.create({ data: { metadata: JSON.stringify(checklistMetadata), workspaceId: currentRoom } })
                 component.compID = checklist.id;
                 newComp = await updateLoadOrder(currentRoom, component)
                 return await getCompData(newComp);
-      
-            }
+
+        }
 
 
     }
