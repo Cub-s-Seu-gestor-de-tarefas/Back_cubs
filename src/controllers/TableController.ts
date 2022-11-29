@@ -95,7 +95,7 @@ class TableController {
         const title = [];
         let i = 0;
         for await (let line of productLine) {
-            let string = line.split(";");
+            let string = line.split(/[;,]+/);
 
             if (i === 0) {
 
@@ -126,7 +126,8 @@ class TableController {
             i++;
         }
         console.log(product)
-        let execelMetadataString = JSON.stringify({ columns: product })
+        let execelMetadataString = await JSON.stringify({ columns: product })
+        
         await prismaClient.table.update({ where: { id: tableId }, data: { JsonString: execelMetadataString } })
 
         //atualizar para salvar no database com workspace e user_id a tabela como JSON.stringfy() 
