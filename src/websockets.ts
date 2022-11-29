@@ -1,6 +1,7 @@
 import { io } from "./http";
 import { SocketAuth } from "./socketControllers/SocketAuth";
 import { SocketChat } from "./socketControllers/SocketChat";
+import { SocketChecklist } from "./socketControllers/SocketChecklist";
 import { SocketDocument } from "./socketControllers/SocketDocument";
 import { SocketImage } from "./socketControllers/SocketImage";
 import { SocketKanban } from "./socketControllers/SocketKanban";
@@ -31,6 +32,7 @@ const socketYoutube = new SocketYoutube();
 const socketNote = new SocketNote();
 const socketImage = new SocketImage();
 const socketTable = new SocketTable();
+const socketChecklist = new SocketChecklist();
 
 
 let user_id = "";
@@ -272,6 +274,7 @@ io.on("connection", (socket) => {
 
     socket.on("UpdateTableMetadata", async (data) => {
         const { tableId,metadata, currentRoom } = data;
+        console.table(data)
           await socketTable.updateMetadata(tableId,metadata);
           socket.broadcast.to(currentRoom).emit("SpredingTableMetadata",{tableId:tableId,metadata:metadata})
 
@@ -279,8 +282,13 @@ io.on("connection", (socket) => {
 
     socket.on("uploadTableReflect", (data) => {
         const { currentRoom, tableId, metadata } = data;
-        console.table(data)
+        
         socket.broadcast.to(currentRoom).emit("SpredingTableMetadata", {tableId:tableId,metadata:metadata})
+    })
+    socket.on("UpdateChecklistMetadata",async(data)=>{
+        const {checklistId,metadata,currentRoom} = data;
+        await socketChecklist.updateChecklist(checklistId,metadata);
+        socket.broadcast.to(currentRoom).emit("SpredingChecklistMetadata", {checklistId:checklistId,metadata:metadata})
     })
 
 });
