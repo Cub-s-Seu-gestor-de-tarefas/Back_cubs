@@ -273,22 +273,27 @@ io.on("connection", (socket) => {
     })
 
     socket.on("UpdateTableMetadata", async (data) => {
-        const { tableId,metadata, currentRoom } = data;
+        const { tableId, metadata, currentRoom } = data;
         console.table(data)
-          await socketTable.updateMetadata(tableId,metadata);
-          socket.broadcast.to(currentRoom).emit("SpredingTableMetadata",{tableId:tableId,metadata:metadata})
+        await socketTable.updateMetadata(tableId, metadata);
+        socket.broadcast.to(currentRoom).emit("SpredingTableMetadata", { tableId: tableId, metadata: metadata })
 
     })
 
     socket.on("uploadTableReflect", (data) => {
         const { currentRoom, tableId, metadata } = data;
-        
-        socket.broadcast.to(currentRoom).emit("SpredingTableMetadata", {tableId:tableId,metadata:metadata})
+
+        socket.broadcast.to(currentRoom).emit("SpredingTableMetadata", { tableId: tableId, metadata: metadata })
     })
-    socket.on("UpdateChecklistMetadata",async(data)=>{
-        const {checklistId,metadata,currentRoom} = data;
-        await socketChecklist.updateChecklist(checklistId,metadata);
-        socket.broadcast.to(currentRoom).emit("SpredingChecklistMetadata", {checklistId:checklistId,metadata:metadata})
+    socket.on("UpdateChecklistMetadata", async (data) => {
+        const { checklistId, metadata, currentRoom } = data;
+        await socketChecklist.updateChecklist(checklistId, metadata);
+        socket.broadcast.to(currentRoom).emit("SpredingChecklistMetadata", { checklistId: checklistId, metadata: metadata })
+    })
+    socket.on("LevelInRoom", async (data,callback) => {
+        const { currentRoom, token } = data;
+        const level = await socketUsers.userLevel(socketAuth.authentication(token),currentRoom)
+          callback({level:level})
     })
 
 });

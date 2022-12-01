@@ -40,5 +40,23 @@ class SocketUsers {
     async changeAnimal(id,animal){
         await prismaClient.user.update({where:{id:id},data:{img:animal}})
     }
+    async userLevel(id,currentRoom){
+        //pegar dono da sala, comparar caso seja retornar, caso não checar nivel de membro
+        const {owner}= await prismaClient.workspace.findFirst({where:{id:currentRoom},select:{owner:true}})
+        if (id === owner) {
+            return "owner";
+        }
+        else{
+           const {admin}= await prismaClient.members.findFirst({where:{userId:id,workspaceId:currentRoom},select:{admin:true}})
+            if (admin ===true) {
+                return "admin";
+            }else{
+                return "guest";
+            }
+       
+        }
+    
+    
+    }
 }
 export { SocketUsers };
