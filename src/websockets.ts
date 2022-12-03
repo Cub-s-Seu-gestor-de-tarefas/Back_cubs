@@ -296,6 +296,16 @@ io.on("connection", (socket) => {
           callback({level:level})
     })
 
+    socket.on("GetMembersControllerInRoom",async(data,callback)=>{
+        const {currentRoom, token}=data;
+        const members =await socketDocument.getMembersControllers(socketAuth.authentication(token),currentRoom)
+//    console.log(members)
+        callback(members);
+   
+    })
+
+
+
 });
 
 console.log(users);

@@ -78,8 +78,8 @@ class SocketDocument {
                     break;
                 case "Checklist":
                     const checklisData = await prismaClient.checkList.findFirst({ where: { id: components[i].compID }, select: { metadata: true } });
-                   let check = JSON.parse(checklisData.metadata)
-                    components[i].compData = { data: check  };
+                    let check = JSON.parse(checklisData.metadata)
+                    components[i].compData = { data: check };
                     break;
             }
 
@@ -186,7 +186,7 @@ class SocketDocument {
                 case "Checklist":
                     const { metadata } = await prismaClient.checkList.findFirst({ where: { id: newComponent.compID }, select: { metadata: true } });
                     let datinha = JSON.parse(metadata)
-                    newComponent.compData = datinha 
+                    newComponent.compData = datinha
                     data = {
                         newComponent: newComponent,
                         position: position
@@ -236,7 +236,7 @@ class SocketDocument {
         }
         const metaTable = {
             columns: [
-                ["", "", ""],
+                ["Bem-vindo", "ao", "Cub's"],
                 [
                     "",
                     "",
@@ -323,6 +323,40 @@ class SocketDocument {
 
 
     }
+
+
+
+
+
+
+
+    async getMembersControllers(id, currentRoom) {
+        const newMembers = [];
+        const { owner } = await prismaClient.workspace.findFirst({ where: { id: currentRoom }, select: { owner: true } })
+        if (owner === id) {
+            let members = await prismaClient.members.findMany({ where: { workspaceId: currentRoom }, select: { userId: true, admin: true } })
+          
+            members.map(async (m) => {
+                const { email, img, name } = await prismaClient.user.findFirst({ where: { id: m.userId }, select: { img: true, email: true, name: true } })
+                newMembers.push({ email: email, img: img, name: name, admin: m.admin })
+                // console.log({ email: email, img: img, name: name, admin: m.admin })
+            })
+            console.log(newMembers)
+            return newMembers;
+        }
+
+
+
+
+
+
+    }
+
+
+
+
+
+
 
 }
 export { SocketDocument };
