@@ -236,7 +236,7 @@ class SocketDocument {
         }
         const metaTable = {
             columns: [
-                ["Bem-vindo", "ao", "Cub's"],
+                ["", "", ""],
                 [
                     "",
                     "",
