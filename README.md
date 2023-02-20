@@ -1,4 +1,4 @@
-![img](./public/assets/Icons-Cubs/multplatform.png)
+![img](https://github.com/Cub-s-Seu-gestor-de-tarefas/Front_cubs/raw/main/public/assets/Icons-Cubs/multplatform.png)
 
 <h1><img src="https://avatars.githubusercontent.com/u/106358944?s=200&v=4" width="100" height="100" align="center" display="flex"/> Cub's</h1>
 
