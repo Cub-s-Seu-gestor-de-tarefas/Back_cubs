@@ -45,5 +45,8 @@ Este projeto de TCC foi desenvolvido com o objetivo de auxiliar na gestão de pr
 ## Chat
 https://user-images.githubusercontent.com/65860424/220378709-7dcfac62-8924-4787-ba61-4411acdfd97a.mp4
 
+## Ferramentas 
+
+[ferramentas.webm](https://github.com/Cub-s-Seu-gestor-de-tarefas/Front_cubs/assets/65860424/9320903a-7872-4c97-bf34-397695a0f3f9)
 
 
