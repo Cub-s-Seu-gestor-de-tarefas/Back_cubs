@@ -17,9 +17,9 @@ class UploadsController {
         console.log(currentRoom, "currentRoom")
         const { id} = await prismaClient.image.findFirst({ where: { id:imageId}, select: { id: true } });
         if (id) {
-            await prismaClient.image.update({ where: { id: id }, data: { path: "http://localhost:3001/Document/"+filename } })
+            await prismaClient.image.update({ where: { id: id }, data: { path: "http://localhost:5000/Document/"+filename } })
         } else {
-            await prismaClient.image.create({ data: { path:"http://localhost:3001/Document/"+ filename, workspaceId: currentRoom } })
+            await prismaClient.image.create({ data: { path:"http://localhost:5000/Document/"+ filename, workspaceId: currentRoom } })
         }
 
 

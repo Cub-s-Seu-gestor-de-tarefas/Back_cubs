@@ -26,6 +26,6 @@ app.use(
 );
 
 const serverHTTP = http.createServer(app);
-const io = new Server(serverHTTP,{cors:{origin:'http://localhost:3000'}});
+const io = new Server(serverHTTP,{cors:{origin:'*'}});
 
 export{serverHTTP,io};
